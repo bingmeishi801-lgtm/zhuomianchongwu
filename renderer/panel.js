@@ -150,16 +150,36 @@ function openPetNameModal(name = null) {
   const input = document.getElementById('pet-name-modal-input');
 
   title.textContent = name ? '编辑猫咪' : '添加猫咪';
+
+  // Reset form first to clear any stale state
+  petNameForm.reset();
+
+  // Set input value and ensure it's fully interactive
   input.value = name || '';
   input.removeAttribute('disabled');
   input.removeAttribute('readonly');
+  input.style.pointerEvents = '';
+  input.style.userSelect = '';
+
   petNameModal.classList.remove('hidden');
-  setTimeout(() => { input.focus(); input.select(); }, 50);
+
+  // Use a slightly longer delay to ensure modal is fully rendered and focusable
+  setTimeout(() => {
+    input.disabled = false;
+    input.readOnly = false;
+    input.focus();
+    if (name) input.select();
+  }, 100);
 }
 
 function closePetNameModal() {
   petNameModal.classList.add('hidden');
   currentEditPetName = null;
+  const input = document.getElementById('pet-name-modal-input');
+  if (input) {
+    input.value = '';
+    input.blur();
+  }
   petNameForm.reset();
 }
 
@@ -198,6 +218,8 @@ async function deletePetName(name) {
   try { await loadPetNames(); } catch (e) { console.error('loadPetNames error:', e); }
   try { await loadActions(); } catch (e) { console.error('loadActions error:', e); }
   console.log('Delete flow complete');
+  // Ensure modal is fully reset after deletion so next open works correctly
+  closePetNameModal();
 }
 
 navBtns.forEach(btn => {
@@ -727,13 +749,6 @@ async function deleteMessage(index) {
 addActionBtn.addEventListener('click', () => openActionModal());
 addMessageBtn.addEventListener('click', () => openMessageModal());
 addPetNameBtn.addEventListener('click', () => openPetNameModal());
-
-// 兜底：用事件委托确保添加猫咪按钮始终可用
-document.addEventListener('click', (e) => {
-  if (e.target.closest('#add-pet-name-btn')) {
-    openPetNameModal();
-  }
-});
 
 // 动作编排事件
 document.getElementById('orch-add-btn').addEventListener('click', addToOrchestration);
