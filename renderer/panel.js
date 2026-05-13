@@ -151,36 +151,32 @@ function openPetNameModal(name = null) {
 
   title.textContent = name ? '编辑猫咪' : '添加猫咪';
 
-  // Reset form first to clear any stale state
-  petNameForm.reset();
-
-  // Set input value and ensure it's fully interactive
-  input.value = name || '';
-  input.removeAttribute('disabled');
-  input.removeAttribute('readonly');
-  input.style.pointerEvents = '';
-  input.style.userSelect = '';
+  // Completely recreate the input to avoid any stale state
+  const parent = input.parentNode;
+  const newInput = document.createElement('input');
+  newInput.type = 'text';
+  newInput.id = 'pet-name-modal-input';
+  newInput.placeholder = '请输入猫咪名称';
+  newInput.maxLength = 30;
+  newInput.required = true;
+  newInput.value = name || '';
+  parent.replaceChild(newInput, input);
 
   petNameModal.classList.remove('hidden');
 
-  // Use a slightly longer delay to ensure modal is fully rendered and focusable
-  setTimeout(() => {
-    input.disabled = false;
-    input.readOnly = false;
-    input.focus();
-    if (name) input.select();
-  }, 100);
+  // Focus window first (needed after confirm() dialog steals focus in Electron)
+  // then focus input with delay to ensure modal is rendered
+  setTimeout(async () => {
+    try { await window.panelAPI.focusWindow(); } catch(e) {}
+    window.focus();
+    newInput.focus();
+    if (name) newInput.select();
+  }, 150);
 }
 
 function closePetNameModal() {
   petNameModal.classList.add('hidden');
   currentEditPetName = null;
-  const input = document.getElementById('pet-name-modal-input');
-  if (input) {
-    input.value = '';
-    input.blur();
-  }
-  petNameForm.reset();
 }
 
 async function savePetName(e) {
@@ -219,6 +215,8 @@ async function deletePetName(name) {
   try { await loadActions(); } catch (e) { console.error('loadActions error:', e); }
   console.log('Delete flow complete');
   // Ensure modal is fully reset after deletion so next open works correctly
+  try { await window.panelAPI.focusWindow(); } catch(e) {}
+  window.focus();
   closePetNameModal();
 }
 

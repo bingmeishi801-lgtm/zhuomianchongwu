@@ -46,5 +46,6 @@ contextBridge.exposeInMainWorld('panelAPI', {
   deletePetName: (name) => ipcRenderer.invoke('panel:delete-pet-name', name),
   getPetSize: () => ipcRenderer.invoke('pet:get-size'),
   setPetSize: (size) => ipcRenderer.invoke('pet:set-size', size),
-  saveOrchestration: (data) => ipcRenderer.invoke('panel:save-orchestration', data)
+  saveOrchestration: (data) => ipcRenderer.invoke('panel:save-orchestration', data),
+  focusWindow: () => ipcRenderer.invoke('panel:focus-window')
 });

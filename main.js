@@ -781,6 +781,12 @@ ipcMain.handle('panel:can-show-pet', () => hasDisplayablePet());
 
 ipcMain.handle('panel:show-pet', () => showPetWindow());
 
+
+ipcMain.handle('panel:focus-window', () => {
+  if (panelWindow) {
+    panelWindow.focus();
+  }
+});
 ipcMain.handle('panel:delete-asset', (_e, name) => {
   ensureDefaultPackStorage();
 
