@@ -147,31 +147,37 @@ function openPetNameModal(name = null) {
   console.log('openPetNameModal called, name:', name);
   currentEditPetName = name;
   const title = document.getElementById('pet-name-modal-title');
-  const input = document.getElementById('pet-name-modal-input');
+  const oldInput = document.getElementById('pet-name-modal-input');
 
   title.textContent = name ? '编辑猫咪' : '添加猫咪';
 
-  // Completely recreate the input to avoid any stale state
-  const parent = input.parentNode;
-  const newInput = document.createElement('input');
-  newInput.type = 'text';
-  newInput.id = 'pet-name-modal-input';
-  newInput.placeholder = '请输入猫咪名称';
-  newInput.maxLength = 30;
-  newInput.required = true;
-  newInput.value = name || '';
-  parent.replaceChild(newInput, input);
+  // Replace the entire form-group innerHTML to get a completely fresh input
+  const formGroup = oldInput.closest('.form-group');
+  formGroup.innerHTML = `
+    <label for="pet-name-modal-input">猫咪名称</label>
+    <input type="text" id="pet-name-modal-input" placeholder="请输入猫咪名称" maxlength="30" required value="${(name || '').replace(/"/g, '&quot;')}" />
+  `;
 
   petNameModal.classList.remove('hidden');
 
-  // Focus window first (needed after confirm() dialog steals focus in Electron)
-  // then focus input with delay to ensure modal is rendered
-  setTimeout(async () => {
-    try { await window.panelAPI.focusWindow(); } catch(e) {}
+  // Use multiple attempts to ensure focus works after confirm() dialog
+  const focusInput = () => {
+    const inp = document.getElementById('pet-name-modal-input');
+    if (inp) {
+      inp.focus();
+      inp.click();
+      if (name) inp.select();
+    }
+  };
+
+  // Try focusing at multiple intervals to handle various timing issues
+  setTimeout(() => {
+    try { window.panelAPI.focusWindow(); } catch(e) {}
     window.focus();
-    newInput.focus();
-    if (name) newInput.select();
-  }, 150);
+    focusInput();
+  }, 100);
+  setTimeout(focusInput, 300);
+  setTimeout(focusInput, 500);
 }
 
 function closePetNameModal() {
@@ -214,10 +220,9 @@ async function deletePetName(name) {
   try { await loadPetNames(); } catch (e) { console.error('loadPetNames error:', e); }
   try { await loadActions(); } catch (e) { console.error('loadActions error:', e); }
   console.log('Delete flow complete');
-  // Ensure modal is fully reset after deletion so next open works correctly
+  // Restore window focus after confirm() dialog
   try { await window.panelAPI.focusWindow(); } catch(e) {}
   window.focus();
-  closePetNameModal();
 }
 
 navBtns.forEach(btn => {
