@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>桌面宠物 - 管理面板</title>
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+          <circle cx="9" cy="10" r="1"/>
+          <circle cx="15" cy="10" r="1"/>
+        </svg>
+        <span>桌面宠物</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-tab="assets">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          素材管理
+        </button>
+        <button class="nav-btn" data-tab="actions">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          动作管理
+        </button>
+        <button class="nav-btn" data-tab="messages">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          消息管理
+        </button>
+        <button class="nav-btn" data-tab="guide">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          使用指南
+        </button>
+        <button class="nav-btn" data-tab="settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 .99-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .99 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51.99H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51.99z"/>
+          </svg>
+          设置管理
+        </button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <!-- 使用指南 -->
+      <section id="tab-guide" class="tab-content">
+        <header class="header">
+          <h1>使用指南</h1>
+          <p>按下面 3 步操作，就可以把上传的视频做成可显示的桌面宠物。</p>
+        </header>
+
+        <div class="guide-steps">
+          <div class="guide-step-card">
+            <div class="guide-step-badge">1</div>
+            <div class="guide-step-body">
+              <h2>先点击上传视频</h2>
+              <p>进入“素材管理”，点击上传区域，选择你要制作成桌宠的视频，等待素材处理完成。</p>
+            </div>
+          </div>
+
+          <div class="guide-step-card">
+            <div class="guide-step-badge">2</div>
+            <div class="guide-step-body">
+              <h2>然后添加动作</h2>
+              <p>进入“动作管理”，点击“添加动作”，给动作命名，并选择刚刚上传生成的素材。</p>
+            </div>
+          </div>
+
+          <div class="guide-step-card">
+            <div class="guide-step-badge">3</div>
+            <div class="guide-step-body">
+              <h2>最后在素材管理里点击显示宠物</h2>
+              <p>动作添加完成后，回到“素材管理”，点击“显示宠物”，桌宠就会出现在桌面上。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 设置管理 -->
+      <section id="tab-settings" class="tab-content">
+        <header class="header">
+          <h1>设置管理</h1>
+          <p>调整桌宠显示尺寸，修改后会立即生效。</p>
+        </header>
+
+        <div class="settings-card">
+          <div class="settings-row">
+            <div>
+              <h2>猫咪名称</h2>
+              <p>可添加多个猫咪名称，添加动作时会作为可选猫咪使用。</p>
+            </div>
+            <button class="btn-primary" id="add-pet-name-btn">添加猫咪</button>
+          </div>
+
+          <div class="pet-name-list" id="pet-name-list">
+            <!-- 猫咪名称列表将在这里动态生成 -->
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div>
+              <h2>桌宠大小</h2>
+              <p>拖动滑块调整桌宠在桌面上的显示大小。</p>
+            </div>
+            <div class="settings-size-value" id="pet-size-value">240 px</div>
+          </div>
+
+          <input
+            type="range"
+            id="pet-size-slider"
+            class="settings-slider"
+            min="120"
+            max="520"
+            step="10"
+            value="240"
+          />
+
+          <div class="settings-scale-labels">
+            <span>120 px</span>
+            <span>520 px</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 素材管理 -->
+      <section id="tab-assets" class="tab-content active">
+        <header class="header">
+          <h1>素材管理</h1>
+          <p>上传视频后会自动提取帧并去除背景；处理完成后才可点击显示宠物</p>
+          <button class="btn-primary" id="show-pet-btn" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            显示宠物
+          </button>
+        </header>
+        <div class="upload-zone" id="upload-zone">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p>拖拽视频文件到此处</p>
+          <span>或点击选择文件</span>
+          <input type="file" id="video-input" accept="video/*,.mp4,.gif" hidden />
+        </div>
+        <div class="upload-progress hidden" id="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <p id="progress-text">正在处理...</p>
+          <div class="progress-percent" id="progress-percent">0%</div>
+        </div>
+        <div class="assets-grid" id="assets-grid">
+          <!-- 素材列表将在这里动态生成 -->
+        </div>
+      </section>
+
+      <div class="modal hidden" id="asset-preview-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content asset-preview-modal-content">
+          <header class="modal-header">
+            <h2 id="asset-preview-title">素材预览</h2>
+            <button class="modal-close" id="asset-preview-close">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </header>
+          <div class="asset-preview-modal-body">
+            <video id="asset-preview-video" controls playsinline preload="metadata"></video>
+            <div class="asset-preview-empty hidden" id="asset-preview-empty">该素材暂无可预览原视频</div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 动作管理 -->
+      <section id="tab-actions" class="tab-content">
+        <header class="header">
+          <h1>动作管理</h1>
+          <p>添加和编辑宠物动作</p>
+          <button class="btn-primary" id="add-action-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            添加动作
+          </button>
+        </header>
+        <div class="actions-list" id="actions-list">
+          <!-- 动作列表将在这里动态生成 -->
+        </div>
+
+        <!-- 动作编排 -->
+        <div class="orchestration-card">
+          <div class="orchestration-header">
+            <div>
+              <h2>动作编排</h2>
+              <p>开启后宠物会按下方顺序循环播放动作，可设置每个动作之间的间隔时间。</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="orch-enabled" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="orchestration-settings">
+            <label for="orch-interval">间隔时间</label>
+            <input type="number" id="orch-interval" min="0" max="60" step="0.5" value="3" />
+            <span>秒（动作播放完毕后等待的时间）</span>
+          </div>
+
+          <div class="orchestration-sequence-label">播放顺序</div>
+          <div class="orchestration-sequence" id="orch-sequence">
+            <!-- 编排列表 -->
+          </div>
+
+          <div class="orchestration-add-row">
+            <select id="orch-add-select">
+              <option value="">选择要添加的动作</option>
+            </select>
+            <button class="btn-primary" id="orch-add-btn">添加到编排</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 消息管理 -->
+      <section id="tab-messages" class="tab-content">
+        <header class="header">
+          <h1>消息管理</h1>
+          <p>编辑双击宠物时显示的对话</p>
+          <button class="btn-primary" id="add-message-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            添加消息
+          </button>
+        </header>
+        <div class="messages-grid" id="messages-grid">
+          <!-- 消息列表将在这里动态生成 -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 动作编辑模态框 -->
+  <div class="modal hidden" id="action-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-title">添加动作</h2>
+        <button class="modal-close" id="modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </header>
+      <form id="action-form">
+        <div class="form-group">
+          <label for="action-name">动作名称</label>
+          <input type="text" id="action-name" placeholder="例如：撒娇、跳舞、睡觉" required />
+        </div>
+        <div class="form-group">
+          <label for="action-pet">选择猫咪</label>
+          <select id="action-pet" required>
+            <option value="">请选择猫咪</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="action-asset">选择素材</label>
+          <select id="action-asset" required>
+            <option value="">请选择素材</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="action-loop" checked />
+            循环播放
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="modal-cancel">取消</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 消息编辑模态框 -->
+  <div class="modal hidden" id="message-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="message-modal-title">添加消息</h2>
+        <button class="modal-close" id="message-modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </header>
+      <form id="message-form">
+        <div class="form-group">
+          <label for="message-text">消息内容</label>
+          <textarea id="message-text" placeholder="输入宠物要说的话..." rows="3" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="message-modal-cancel">取消</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 猫咪名称编辑模态框 -->
+  <div class="modal hidden" id="pet-name-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="pet-name-modal-title">添加猫咪</h2>
+        <button class="modal-close" id="pet-name-modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </header>
+      <form id="pet-name-form">
+        <div class="form-group">
+          <label for="pet-name-modal-input">猫咪名称</label>
+          <input type="text" id="pet-name-modal-input" placeholder="请输入猫咪名称" maxlength="30" required />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="pet-name-modal-cancel">取消</button>
+          <button type="submit" class="btn-primary">确定</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>

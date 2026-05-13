@@ -1,0 +1,76 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  /* Prevent text selection while dragging */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pet {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+
+.pet:active {
+  cursor: grabbing;
+}
+
+.pet-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  /* Allow clicks to pass through to .pet container */
+  pointer-events: none;
+  object-fit: contain;
+}
+
+.pet-layer.active {
+  display: block;
+  /* Active layer still doesn't capture clicks - .pet handles them */
+  pointer-events: none;
+}
+
+#pet-rig {
+  image-rendering: auto;
+}
+
+/* Flip horizontally when walking left */
+.pet.flip .pet-layer {
+  transform: scaleX(-1);
+}
+
+/* Speech bubble */
+.bubble {
+  position: absolute;
+  top: clamp(8px, 14%, 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #333;
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 90%;
+  text-align: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  z-index: 100;
+}
+
+.bubble.hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}

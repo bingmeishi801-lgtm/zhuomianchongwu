@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Desktop Pet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="pet" class="pet">
+    <!-- One renderer per animation type; only one is visible at a time. -->
+    <img id="pet-gif" class="pet-layer" alt="" />
+    <canvas id="pet-sequence" class="pet-layer"></canvas>
+    <div id="pet-lottie" class="pet-layer"></div>
+    <canvas id="pet-rig" class="pet-layer"></canvas>
+    <!-- Speech bubble for double-click interaction -->
+    <div id="bubble" class="bubble hidden"></div>
+  </div>
+
+  <!-- lottie-web is bundled locally so the app works offline -->
+  <script src="vendor/lottie.min.js"></script>
+  <script src="pet.js"></script>
+</body>
+</html>
