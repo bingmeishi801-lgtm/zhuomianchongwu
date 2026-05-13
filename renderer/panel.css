@@ -582,6 +582,7 @@ body {
 
 .modal-content {
   position: relative;
+  z-index: 1;
   background: var(--bg-secondary);
   border-radius: 12px;
   width: 100%;

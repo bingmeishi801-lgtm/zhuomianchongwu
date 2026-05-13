@@ -147,42 +147,25 @@ function openPetNameModal(name = null) {
   console.log('openPetNameModal called, name:', name);
   currentEditPetName = name;
   const title = document.getElementById('pet-name-modal-title');
-  const oldInput = document.getElementById('pet-name-modal-input');
+  const input = document.getElementById('pet-name-modal-input');
 
   title.textContent = name ? '编辑猫咪' : '添加猫咪';
-
-  // Replace the entire form-group innerHTML to get a completely fresh input
-  const formGroup = oldInput.closest('.form-group');
-  formGroup.innerHTML = `
-    <label for="pet-name-modal-input">猫咪名称</label>
-    <input type="text" id="pet-name-modal-input" placeholder="请输入猫咪名称" maxlength="30" required value="${(name || '').replace(/"/g, '&quot;')}" />
-  `;
+  input.value = name || '';
+  input.removeAttribute('disabled');
+  input.removeAttribute('readonly');
 
   petNameModal.classList.remove('hidden');
 
-  // Use multiple attempts to ensure focus works after confirm() dialog
-  const focusInput = () => {
-    const inp = document.getElementById('pet-name-modal-input');
-    if (inp) {
-      inp.focus();
-      inp.click();
-      if (name) inp.select();
-    }
-  };
-
-  // Try focusing at multiple intervals to handle various timing issues
   setTimeout(() => {
-    try { window.panelAPI.focusWindow(); } catch(e) {}
-    window.focus();
-    focusInput();
-  }, 100);
-  setTimeout(focusInput, 300);
-  setTimeout(focusInput, 500);
+    input.focus();
+    if (name) input.select();
+  }, 50);
 }
 
 function closePetNameModal() {
   petNameModal.classList.add('hidden');
   currentEditPetName = null;
+  petNameForm.reset();
 }
 
 async function savePetName(e) {
@@ -220,9 +203,6 @@ async function deletePetName(name) {
   try { await loadPetNames(); } catch (e) { console.error('loadPetNames error:', e); }
   try { await loadActions(); } catch (e) { console.error('loadActions error:', e); }
   console.log('Delete flow complete');
-  // Restore window focus after confirm() dialog
-  try { await window.panelAPI.focusWindow(); } catch(e) {}
-  window.focus();
 }
 
 navBtns.forEach(btn => {
