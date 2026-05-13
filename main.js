@@ -22,12 +22,6 @@ const SETTINGS_PATH = path.join(USER_DATA_DIR, 'settings.json');
 const BUNDLED_PETS_DIR = path.join(__dirname, 'assets', 'pets');
 const USER_PETS_DIR = path.join(USER_DATA_DIR, 'pets');
 const PETS_DIR = path.join(USER_PETS_DIR, 'default');
-const DEBUG_LOG = path.join(USER_DATA_DIR, 'debug.log');
-
-function debugLog(...args) {
-  const msg = `[${new Date().toISOString()}] ${args.join(' ')}\n`;
-  try { fs.appendFileSync(DEBUG_LOG, msg, 'utf8'); } catch {}
-}
 
 function ensureDefaultPackStorage() {
   fs.mkdirSync(PETS_DIR, { recursive: true });
@@ -941,23 +935,13 @@ ipcMain.handle('panel:get-pet-names', () => {
 
 ipcMain.handle('panel:delete-pet-name', (_e, petName) => {
   const targetName = String(petName || '').trim();
-  debugLog('DELETE start:', targetName);
 
   if (!targetName) {
     throw new Error('猫咪名称不能为空');
   }
 
-  // 直接读取和修改配置文件，不经过 normalize
-  const configPath = getConfigPath();
-  let raw;
-  try {
-    raw = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  } catch {
-    throw new Error('读取配置失败');
-  }
-
-  const petNames = Array.isArray(raw.petNames) ? [...raw.petNames] : [raw.name || '汤米'];
-  debugLog('DELETE raw petNames:', JSON.stringify(petNames));
+  const config = readDefaultPackConfig();
+  const petNames = [...(config.petNames || [])];
   const targetIndex = petNames.indexOf(targetName);
 
   if (targetIndex === -1) {
@@ -969,53 +953,30 @@ ipcMain.handle('panel:delete-pet-name', (_e, petName) => {
   }
 
   petNames.splice(targetIndex, 1);
-  raw.petNames = petNames;
-  raw.name = petNames[0];
+  config.petNames = petNames;
 
-  // 更新 action 中的 petName 引用
-  if (raw.actions && typeof raw.actions === 'object') {
-    Object.values(raw.actions).forEach(action => {
-      if (action && action.petName === targetName) {
-        action.petName = petNames[0];
-      }
-    });
-  }
+  Object.values(config.actions || {}).forEach(action => {
+    if (action && action.petName === targetName) {
+      action.petName = petNames[0];
+    }
+  });
 
-  // 直接写入，不经 normalize
-  try {
-    fs.writeFileSync(configPath, JSON.stringify(raw, null, 2), 'utf8');
-  } catch (e) {
-    debugLog('DELETE write error:', e.message);
-    throw new Error('保存配置失败');
-  }
-  debugLog('DELETE done, wrote petNames:', JSON.stringify(petNames));
+  writeDefaultPackConfig(config);
 
-  try { if (petWindow) petWindow.webContents.send('pet:reload-config'); } catch {}
-  try { if (tray) tray.setContextMenu(buildContextMenu()); } catch (e) { debugLog('DELETE menu error:', e.message); }
-
-  return normalizeDefaultPackConfig(raw);
+  if (tray) tray.setContextMenu(buildContextMenu());
+  return config;
 });
 
 ipcMain.handle('panel:save-pet-name', (_e, payload = {}) => {
   const name = String(payload.name || '').trim();
   const originalName = String(payload.originalName || '').trim();
-  debugLog('SAVE start:', name, 'original:', originalName);
 
   if (!name) {
     throw new Error('猫咪名称不能为空');
   }
 
-  // 直接读取配置文件，不经过 normalize
-  const configPath = getConfigPath();
-  let raw;
-  try {
-    raw = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  } catch {
-    raw = getDefaultPackConfig();
-  }
-
-  const petNames = Array.isArray(raw.petNames) ? [...raw.petNames] : [raw.name || '汤米'];
-  debugLog('SAVE raw petNames:', JSON.stringify(petNames));
+  const config = readDefaultPackConfig();
+  const petNames = [...(config.petNames || [])];
   const existingIndex = petNames.indexOf(name);
   const originalIndex = originalName ? petNames.indexOf(originalName) : -1;
 
@@ -1034,31 +995,18 @@ ipcMain.handle('panel:save-pet-name', (_e, payload = {}) => {
     petNames.push(name);
   }
 
-  raw.petNames = petNames;
-  raw.name = petNames[0];
+  config.petNames = petNames;
 
-  // 更新 action 中的 petName 引用
-  if (raw.actions && typeof raw.actions === 'object') {
-    Object.values(raw.actions).forEach(action => {
-      if (action && action.petName === originalName) {
-        action.petName = name;
-      }
-    });
-  }
+  Object.values(config.actions || {}).forEach(action => {
+    if (action && action.petName === originalName) {
+      action.petName = name;
+    }
+  });
 
-  // 直接写入，不经 normalize
-  try {
-    fs.writeFileSync(configPath, JSON.stringify(raw, null, 2), 'utf8');
-  } catch (e) {
-    debugLog('SAVE write error:', e.message);
-    throw new Error('保存配置失败');
-  }
-  debugLog('SAVE done, wrote petNames:', JSON.stringify(petNames));
+  writeDefaultPackConfig(config);
 
-  try { if (petWindow) petWindow.webContents.send('pet:reload-config'); } catch {}
-  try { if (tray) tray.setContextMenu(buildContextMenu()); } catch (e) { debugLog('SAVE menu error:', e.message); }
-
-  return normalizeDefaultPackConfig(raw);
+  if (tray) tray.setContextMenu(buildContextMenu());
+  return config;
 });
 
 ipcMain.handle('panel:save-action', (_e, name, { petName, asset, loop, originalName }) => {

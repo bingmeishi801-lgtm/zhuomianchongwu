@@ -18,14 +18,14 @@ const addActionBtn = document.getElementById('add-action-btn');
 const addMessageBtn = document.getElementById('add-message-btn');
 const actionModal = document.getElementById('action-modal');
 const messageModal = document.getElementById('message-modal');
-const petNameModal = document.getElementById('pet-name-modal');
+// petNameModal 不再使用
 const assetPreviewModal = document.getElementById('asset-preview-modal');
 const assetPreviewVideo = document.getElementById('asset-preview-video');
 const assetPreviewEmpty = document.getElementById('asset-preview-empty');
 const assetPreviewTitle = document.getElementById('asset-preview-title');
 const actionForm = document.getElementById('action-form');
 const messageForm = document.getElementById('message-form');
-const petNameForm = document.getElementById('pet-name-form');
+// petNameForm 不再使用
 
 let currentEditAction = null;
 let currentEditMessage = null;
@@ -135,69 +135,33 @@ async function loadPetNames() {
   });
 
   document.querySelectorAll('.edit-pet-name').forEach(btn => {
-    btn.addEventListener('click', () => openPetNameModal(btn.dataset.name));
+    btn.addEventListener('click', async () => {
+      const oldName = btn.dataset.name;
+      const newName = prompt('编辑猫咪名称:', oldName);
+      if (!newName || newName.trim() === oldName) return;
+      try {
+        await window.panelAPI.savePetName({ name: newName.trim(), originalName: oldName });
+        await loadPetNames();
+        await loadActions();
+      } catch (err) {
+        alert('保存失败: ' + (err.message || err));
+      }
+    });
   });
 
   document.querySelectorAll('.delete-pet-name').forEach(btn => {
-    btn.addEventListener('click', () => deletePetName(btn.dataset.name));
+    btn.addEventListener('click', async () => {
+      const name = btn.dataset.name;
+      if (!confirm(`确定要删除猫咪名称”${name}”吗？\n\n使用这个名称的动作会自动改绑到当前列表中的第一个猫咪名称。`)) return;
+      try {
+        await window.panelAPI.deletePetName(name);
+      } catch (err) {
+        alert('删除失败: ' + (err.message || err));
+      }
+      await loadPetNames();
+      await loadActions();
+    });
   });
-}
-
-function openPetNameModal(name = null) {
-  console.log('openPetNameModal called, name:', name);
-  currentEditPetName = name;
-  const title = document.getElementById('pet-name-modal-title');
-  const input = document.getElementById('pet-name-modal-input');
-
-  title.textContent = name ? '编辑猫咪' : '添加猫咪';
-  input.value = name || '';
-  input.removeAttribute('disabled');
-  input.removeAttribute('readonly');
-  petNameModal.classList.remove('hidden');
-  setTimeout(() => { input.focus(); input.select(); }, 50);
-}
-
-function closePetNameModal() {
-  petNameModal.classList.add('hidden');
-  currentEditPetName = null;
-  petNameForm.reset();
-}
-
-async function savePetName(e) {
-  e.preventDefault();
-  const input = document.getElementById('pet-name-modal-input');
-  const name = input.value.trim();
-  if (!name) {
-    alert('猫咪名称不能为空');
-    input.focus();
-    return;
-  }
-
-  try {
-    await window.panelAPI.savePetName({ name, originalName: currentEditPetName });
-    closePetNameModal();
-    await loadPetNames();
-    await loadActions();
-  } catch (err) {
-    alert('保存失败: ' + (err.message || err));
-  }
-}
-
-async function deletePetName(name) {
-  if (!name) return;
-  if (!confirm(`确定要删除猫咪名称“${name}”吗？\n\n使用这个名称的动作会自动改绑到当前列表中的第一个猫咪名称。`)) return;
-
-  try {
-    console.log('Deleting pet name:', name);
-    const result = await window.panelAPI.deletePetName(name);
-    console.log('Delete result:', result);
-  } catch (err) {
-    console.error('Delete error:', err);
-    alert('删除失败: ' + (err.message || err));
-  }
-  try { await loadPetNames(); } catch (e) { console.error('loadPetNames error:', e); }
-  try { await loadActions(); } catch (e) { console.error('loadActions error:', e); }
-  console.log('Delete flow complete');
 }
 
 navBtns.forEach(btn => {
@@ -726,12 +690,30 @@ async function deleteMessage(index) {
 
 addActionBtn.addEventListener('click', () => openActionModal());
 addMessageBtn.addEventListener('click', () => openMessageModal());
-addPetNameBtn.addEventListener('click', () => openPetNameModal());
+addPetNameBtn.addEventListener('click', async () => {
+  const name = prompt('请输入猫咪名称:');
+  if (!name || !name.trim()) return;
+  try {
+    await window.panelAPI.savePetName({ name: name.trim() });
+    await loadPetNames();
+    await loadActions();
+  } catch (err) {
+    alert('保存失败: ' + (err.message || err));
+  }
+});
 
 // 兜底：用事件委托确保添加猫咪按钮始终可用
-document.addEventListener('click', (e) => {
+document.addEventListener('click', async (e) => {
   if (e.target.closest('#add-pet-name-btn')) {
-    openPetNameModal();
+    const name = prompt('请输入猫咪名称:');
+    if (!name || !name.trim()) return;
+    try {
+      await window.panelAPI.savePetName({ name: name.trim() });
+      await loadPetNames();
+      await loadActions();
+    } catch (err) {
+      alert('保存失败: ' + (err.message || err));
+    }
   }
 });
 
@@ -766,8 +748,6 @@ document.getElementById('modal-close').addEventListener('click', closeActionModa
 document.getElementById('modal-cancel').addEventListener('click', closeActionModal);
 document.getElementById('message-modal-close').addEventListener('click', closeMessageModal);
 document.getElementById('message-modal-cancel').addEventListener('click', closeMessageModal);
-document.getElementById('pet-name-modal-close').addEventListener('click', closePetNameModal);
-document.getElementById('pet-name-modal-cancel').addEventListener('click', closePetNameModal);
 document.getElementById('asset-preview-close').addEventListener('click', closeAssetPreviewModal);
 
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
@@ -775,7 +755,6 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     if (e.target === backdrop) {
       closeActionModal();
       closeMessageModal();
-      closePetNameModal();
       closeAssetPreviewModal();
     }
   });
@@ -783,7 +762,7 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
 
 actionForm.addEventListener('submit', saveAction);
 messageForm.addEventListener('submit', saveMessage);
-petNameForm.addEventListener('submit', savePetName);
+// petNameForm 不再使用，猫咪名称通过 prompt 管理
 
 (async function init() {
   await loadAssets();

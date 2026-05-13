@@ -1,10 +1,5 @@
 node_modules/
-dist/
-dist2/
-dist3/
-dist4/
-dist5/
-dist6/
+dist*/
 dist_old_*/
 out/
 tools/ffmpeg.exe
